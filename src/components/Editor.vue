@@ -205,11 +205,16 @@ export default {
 
     this.html = this.editor.getHTML();
     this.json = this.editor.getJSON();
-
+    this.editor.on('create', () => {
+      this.html = this.editor.getHTML();
+      this.json = this.editor.getJSON();
+      this.$emit('update', { html: this.html, json: this.json });
+    });
+    
     this.editor.on('update', () => {
       this.html = this.editor.getHTML();
       this.json = this.editor.getJSON();
-      this.$emit('update', this.html);
+      this.$emit('update', { html: this.html, json: this.json });
     });
   },
   beforeUnmount() {

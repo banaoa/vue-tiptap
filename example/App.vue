@@ -42,24 +42,37 @@
       ]"
       @update="test"
     />
+    <code>
+      {{ html }}
+    </code>
+    <json-viewer :value="json"></json-viewer>
   </div>
 </template>
 
 <script>
 import Editor from '@/components/Editor.vue';
+import JsonViewer from 'vue-json-viewer';
 
 export default {
   name: 'App',
+
   components: {
     Editor,
+    JsonViewer,
+  },
+  data() {
+    return {
+      html: '',
+      json: '',
+    };
   },
   created() {
     document.title = 'vue-tiptap example';
   },
   methods: {
-    test(something) {
-      // eslint-disable-next-line no-console
-      console.log(something);
+    test(obj) {
+      this.html = obj.html;
+      this.json = obj.json;
     },
   },
 };
