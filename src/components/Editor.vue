@@ -1,5 +1,6 @@
 <template>
   <div class="editor">
+    <button @click="test">对比</button>
     <div class="menubar">
       <span v-for="actionName in activeButtons" :key="actionName">
         <button
@@ -143,8 +144,9 @@
         </button>
       </span>
     </div>
-
+    <div id="content" style="display: none"><p>111333</p></div>
     <editor-content class="editor__content" :editor="editor" />
+    <div id="history"></div>
   </div>
 </template>
 
@@ -154,6 +156,11 @@ import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
+import { EditorState, Plugin, PluginKey } from '@tiptap/pm/state';
+import { Schema, DOMParser, DOMSerializer } from '@tiptap/pm/model';
+import { Decoration, DecorationSet, EditorView } from '@tiptap/pm/view';
+import { ChangeSet } from 'prosemirror-changeset';
+import { recreateTransform } from '@z-editor/prosemirror-recreate-steps';
 
 export default {
   name: 'Editor',
@@ -235,10 +242,93 @@ export default {
       console.log(editor.schema.marks);
     });
   },
+  methods: {
+    test() {
+      let doc1 = this.editor.view.state.doc;
+      let doc2 = DOMParser.fromSchema(this.editor.schema).parse(
+        document.querySelector('#content')
+      );
+      let mySchema = this.editor.schema;
+      let tr = recreateTransform(doc1, doc2, false, true);
+      console.log(tr);
+      let decos = DecorationSet.empty; // decorations 的空集合。
+      let changeSet = ChangeSet.create(doc1).addSteps(tr.doc, tr.mapping.maps);
+      let { startDoc, changes, simplifyChanges } = changeSet;
+      changes.forEach((ccc) => {
+        // 添加的元素
+        ccc.inserted.forEach((insertion) => {
+          decos = decos.add(tr.doc, [
+            // 添加行内元素span, 添加class
+            Decoration.inline(ccc.fromB, ccc.toB, { class: 'insertion' }, {}),
+          ]);
+        });
+
+        // 删除的元素
+        ccc.deleted.forEach((deletion) => {
+          let dom = document.createElement('span');
+          // 添加行内元素span, 添加class
+          dom.setAttribute('class', 'deletion');
+
+          dom.appendChild(
+            DOMSerializer.fromSchema(mySchema).serializeFragment(
+              startDoc.slice(ccc.fromA, ccc.toA).content
+            )
+          );
+
+          decos = decos.add(tr.doc, [
+            // Decoration.widget({widget: dom, side: -1, marks: []}).range(deletion.from, deletion.to)
+            Decoration.widget(ccc.toB, dom, { marks: [] }),
+          ]);
+        });
+      });
+      let historyState = EditorState.create({
+        doc: tr.doc,
+        plugins: [
+          new Plugin({
+            key: new PluginKey('diffs'),
+            props: {
+              decorations(state) {
+                return decos;
+              },
+            },
+            filterTransaction: (tr) => false,
+          }),
+        ],
+      });
+      // 新建一个div,
+      let historyViewDiv = document.createElement('div');
+      // 获取页面展示历史记录区域的id, 即#history
+      let historyDiv = document.getElementById('history');
+
+      // 将刚才新建的div添加到#history中
+      historyDiv.insertBefore(historyViewDiv, historyDiv.firstElementChild);
+
+      // 创建新的editorView, 展示差异
+      new EditorView(historyViewDiv, {
+        state: historyState,
+      });
+    },
+  },
   beforeUnmount() {
     this.editor.destroy();
   },
 };
 </script>
 
-<style lang="css" scoped></style>
+<style lang="css">
+.insertion {
+  text-decoration: underline;
+  background-color: rgba(0, 255, 42, 0.2);
+}
+.deletion {
+  text-decoration: line-through;
+  background-color: rgba(255, 29, 29, 0.2);
+}
+span > p:first-child,
+span > p:last-child {
+  display: inline;
+}
+span > p:empty {
+  display: block;
+}
+</style>
