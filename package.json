@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "Vue component to use TipTap Editor without being renderless",
   "scripts": {
-    "serve": "vue-cli-service serve example/main.js",
+    "dev": "vue-cli-service serve example/main.js",
     "build": "vue-cli-service build example/main.js",
     "lint": "npx eslint . --ext js,json,vue",
     "lint:fix": "npx eslint . --ext js,json,vue --fix",
@@ -24,9 +24,11 @@
     "url": "https://github.com/neverbot/vue-tiptap/issues"
   },
   "dependencies": {
+    "@tiptap/extension-link": "^2.0.3",
     "@tiptap/extension-underline": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
     "@tiptap/vue-3": "^2.0.3",
+    "@z-editor/prosemirror-recreate-steps": "^0.1.5",
     "core-js": "^3.30.2",
     "vue": "^3.2.47",
     "vue-json-viewer": "^3.0.4"

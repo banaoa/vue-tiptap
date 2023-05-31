@@ -37,6 +37,7 @@
         'blockquote',
         'codeBlock',
         'horizontalRule',
+        'link',
         'undo',
         'redo',
       ]"

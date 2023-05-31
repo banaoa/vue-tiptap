@@ -38,6 +38,15 @@
         </button>
 
         <button
+          v-if="actionName === 'link'"
+          class="menubar__button"
+          :class="{ 'is-active': editor.isActive('link') }"
+          @click="editor.chain().focus().toggleLink().run()"
+        >
+          <icon name="link" />
+        </button>
+
+        <button
           v-if="actionName === 'code'"
           class="menubar__button"
           :class="{ 'is-active': editor.isActive('code') }"
@@ -144,6 +153,7 @@ import Icon from './Icon';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
 
 export default {
   name: 'Editor',
@@ -168,6 +178,7 @@ export default {
               'italic',
               'strike',
               'underline',
+              'link',
               'code',
               'h1',
               'h2',
@@ -200,7 +211,7 @@ export default {
   created() {
     this.editor = new Editor({
       content: this.initialContent,
-      extensions: [StarterKit, Underline],
+      extensions: [StarterKit, Underline, Link],
     });
 
     this.html = this.editor.getHTML();
@@ -210,11 +221,18 @@ export default {
       this.json = this.editor.getJSON();
       this.$emit('update', { html: this.html, json: this.json });
     });
-    
+
     this.editor.on('update', () => {
       this.html = this.editor.getHTML();
       this.json = this.editor.getJSON();
       this.$emit('update', { html: this.html, json: this.json });
+    });
+    this.editor.on('selectionUpdate', ({ editor }) => {
+      console.log(editor.isActive('link'));
+      //console.log(editor);
+      //console.log(editor.state.selection.ranges);
+      //console.log('selection update');
+      console.log(editor.schema.marks);
     });
   },
   beforeUnmount() {
