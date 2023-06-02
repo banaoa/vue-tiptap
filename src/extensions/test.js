@@ -2,7 +2,9 @@ import { Node, mergeAttributes } from '@tiptap/core';
 // https://tiptap.dev/guide/custom-extensions
 const Test = Node.create({
   name: 'test',
+  // 优先级
   priority: 1000,
+  // 允许任何marks在当前属性上
   marks: '_',
   addOptions() {
     return {
@@ -10,9 +12,12 @@ const Test = Node.create({
     };
   },
   inline: true,
+  // 这是一个inline的元素
   group: 'inline',
   // https://tiptap.dev/api/schema#content
+  // 里面只能放inline的元素
   content: 'inline*',
+  // 匹配什么规则的元素
   parseHTML() {
     return [
       {
@@ -23,7 +28,7 @@ const Test = Node.create({
       },
     ];
   },
-
+  // 渲染什么样的元素到编辑器里
   renderHTML({ HTMLAttributes }) {
     return [
       'span',
@@ -31,6 +36,7 @@ const Test = Node.create({
       0,
     ];
   },
+  // 允许有什么属性
   addAttributes() {
     // Return an object with attribute configuration
     return {
@@ -39,6 +45,7 @@ const Test = Node.create({
       },
     };
   },
+  // 额外的命令
   addCommands() {
     return {
       setParagraph:
