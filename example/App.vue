@@ -2,10 +2,7 @@
   <div id="app">
     <h1>vue-tiptap example</h1>
     <editor
-      initial-content="
-          <p>
-            111
-          </p>"
+      :initial-content=initialContent
       :active-buttons="[
         'bold',
         'italic',
@@ -48,6 +45,7 @@ export default {
     return {
       html: '',
       json: '',
+      initialContent: `<p>12312</p>`
     };
   },
   created() {

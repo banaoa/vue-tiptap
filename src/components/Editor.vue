@@ -157,10 +157,12 @@ import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
 import { EditorState, Plugin, PluginKey } from '@tiptap/pm/state';
-import { Schema, DOMParser, DOMSerializer } from '@tiptap/pm/model';
+import { Schema, DOMParser, DOMSerializer, Node } from '@tiptap/pm/model';
 import { Decoration, DecorationSet, EditorView } from '@tiptap/pm/view';
 import { ChangeSet } from 'prosemirror-changeset';
 import { recreateTransform } from '@z-editor/prosemirror-recreate-steps';
+import Test from "@/extensions/test";
+import Paragraph from "@/extensions/paragraph";
 
 export default {
   name: 'Editor',
@@ -218,7 +220,7 @@ export default {
   created() {
     this.editor = new Editor({
       content: this.initialContent,
-      extensions: [StarterKit, Underline, Link],
+      extensions: [StarterKit, Underline, Link, Test, Paragraph],
     });
 
     this.html = this.editor.getHTML();
@@ -245,9 +247,14 @@ export default {
   methods: {
     test() {
       let doc1 = this.editor.view.state.doc;
-      let doc2 = DOMParser.fromSchema(this.editor.schema).parse(
-        document.querySelector('#content')
-      );
+
+      let doc2 = Node.fromJSON(this.editor.schema, {
+        type: 'doc',
+        content: [
+          { type: 'paragraph', content: [{ type: 'text', text: 'xx1231232bb' }] },
+        ],
+      });
+      console.log(JSON.stringify(doc2.toJSON()));
       let mySchema = this.editor.schema;
       let tr = recreateTransform(doc1, doc2, false, true);
       console.log(tr);
