@@ -1,4 +1,4 @@
-import TiptapParagraph from '@tiptap/extension-paragraph'
+import TiptapParagraph from '@tiptap/extension-paragraph';
 
 const Paragraph = TiptapParagraph.extend({
   // marks: '_',
@@ -7,6 +7,6 @@ const Paragraph = TiptapParagraph.extend({
   // parseHTML() {
   //   return []
   // },
-})
+});
 
-export default Paragraph
+export default Paragraph;
