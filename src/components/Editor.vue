@@ -232,11 +232,11 @@ export default {
       this.$emit('update', { html: this.html, json: this.json });
     });
     this.editor.on('selectionUpdate', ({ editor }) => {
-      console.log(editor.isActive('link'));
+      // console.log(editor.isActive('link'));
       //console.log(editor);
       //console.log(editor.state.selection.ranges);
       //console.log('selection update');
-      console.log(editor.schema.marks);
+      // console.log(editor.schema.marks);
     });
   },
   beforeUnmount() {
@@ -244,7 +244,12 @@ export default {
   },
   methods: {
     test() {
-      this.editor.commands.toggleDiff();
+      let tr = this.editor.state.tr.insertText('1');
+      tr = tr.insertText('2');
+      tr = tr.insertText('3');
+      console.log(tr);
+      this.editor.view.dispatch(tr);
+      //this.editor.commands.toggleDiff();
     },
   },
 };

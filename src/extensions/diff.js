@@ -61,20 +61,23 @@ const Test = Node.create({
       toggleDiff:
         () =>
         ({ commands }) => {
-          let doc1 = this.editor.view.state.doc;
-          console.log('当前文档', JSON.stringify(doc1.toJSON()));
-          let doc2 = PmNode.fromJSON(this.editor.schema, {
+          let doc1 = PmNode.fromJSON(this.editor.schema, {
             type: 'doc',
             content: [
               {
                 type: 'paragraph',
-                content: [{ type: 'text', text: 'xx1231232bb' }],
+                content: [{ type: 'text', text: '原始文档' }],
               },
             ],
           });
-          console.log('原始文档', JSON.stringify(doc2.toJSON()));
+          console.log('原始文档', JSON.stringify(doc1.toJSON()));
+          let doc2 = this.editor.view.state.doc;
+          console.log('当前文档', JSON.stringify(doc2.toJSON()));
           let mySchema = this.editor.schema;
           let tr = recreateTransform(doc1, doc2, false, true);
+          // tr.doc
+          // tr.docs
+          // tr.steps
           console.log('tr', tr);
           console.log('差异', JSON.stringify(tr.doc.toJSON()));
           let decos = DecorationSet.empty; // decorations 的空集合。
