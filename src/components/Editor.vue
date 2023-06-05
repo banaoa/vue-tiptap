@@ -156,7 +156,7 @@ import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
-import Test from '@/extensions/test';
+import Diff from '@/extensions/diff';
 import Paragraph from '@/extensions/paragraph';
 
 export default {
@@ -215,7 +215,7 @@ export default {
   created() {
     this.editor = new Editor({
       content: this.initialContent,
-      extensions: [StarterKit, Underline, Link, Test, Paragraph],
+      extensions: [StarterKit, Underline, Link, Diff, Paragraph],
     });
 
     this.html = this.editor.getHTML();
